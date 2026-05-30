@@ -4,7 +4,7 @@ QUG is a Discord agent prompt for running short, game-structured roleplay sessio
 
 Instead of trying to remove uncertainty before action, QUG helps a user translate a recent stuck moment into a small playable quest, observe the situation from a slight distance, and return with one manageable next step.
 
-This repository currently contains the agent definition for use with `discord-agent-hub`.
+This repository currently contains the agent definition for use with [`discord-agent-hub`](https://github.com/ks91/discord-agent-hub).
 
 ## Repository Contents
 
@@ -40,7 +40,7 @@ The prompt emphasizes bounded choice, observer-mode distance, local consequence,
 
 ## Using With Discord Agent Hub
 
-Copy or register `sg-qug-agent.md` as an agent definition in your `discord-agent-hub` setup.
+Use `sg-qug-agent.md` as an import-ready agent definition for [`discord-agent-hub`](https://github.com/ks91/discord-agent-hub).
 
 The file includes an `agent` metadata block:
 
@@ -56,7 +56,11 @@ tools:
   code_execution: false
 ```
 
-After installing it in your agent hub, enable the agent and start a Discord conversation with QUG. The agent is designed to open with a short introduction, ask for one current difficulty, and guide the user through the quest loop.
+In Discord, import the Markdown file with the `/agent-import` slash command. After the agent is imported, start a Discord thread with QUG using `/chat agent_id:sg-qug-agent`, then send messages inside the created thread.
+
+If you update `sg-qug-agent.md`, re-import it with `/agent-import` and `overwrite:true` to replace the existing agent definition.
+
+The agent is designed to open with a short introduction, ask for one current difficulty, and guide the user through the quest loop.
 
 ## Design Principles
 
