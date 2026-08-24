@@ -48,6 +48,8 @@ The master retains the complete bilingual design rationale and state rules. Runt
 
 The checker deliberately fails after any master edit until both runtime source markers are refreshed. It also rejects `SESSION_LANGUAGE` in a runtime and Japanese characters in the English runtime. It is a drift guard, not a substitute for bilingual behavioral testing.
 
+Each runtime stores its `source-sha256` marker in an HTML comment near the top of the file. The marker is visible in GitHub's Code or Raw view but hidden in rendered Markdown.
+
 ## Importing Into Discord Agent Hub
 
 Import the desired runtime with the `/agent-import` slash command:
