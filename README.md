@@ -1,93 +1,87 @@
 # QUG: Questifying Uncertainty Game
 
-QUG is a Discord agent prompt for running short, game-structured roleplay sessions around long-term uncertainty.
+QUG is a Discord agent prompt for running short, game-structured roleplay sessions around unresolved uncertainty. It translates a recent stuck situation into a playable analogue, lets the player enact bounded choices, and returns to one manageable action without requiring the larger uncertainty to be resolved first.
 
-Instead of trying to remove uncertainty before action, QUG helps a user translate a recent stuck moment into a small playable quest, observe the situation from a slight distance, and return with one manageable next step.
-
-This repository currently contains the agent definition for use with [`discord-agent-hub`](https://github.com/ks91/discord-agent-hub).
+This repository contains the QUG specification and language-specific agent definitions for [`discord-agent-hub`](https://github.com/ks91/discord-agent-hub).
 
 ## Repository Contents
 
-- `sg-qug-agent.md` - Discord agent hub agent definition and full QUG prompt.
-- `LICENSE` - Project license.
+- `sg-qug-agent-master.md` - non-runtime master specification and research design source of truth. Edit this file first. It is intentionally disabled.
+- `sg-qug-agent-en.md` - English runtime with Normal and Demo modes. Use this for the JCSG conference demonstration.
+- `sg-qug-agent-ja.md` - Japanese runtime with Normal and Demo modes.
+- `check_qug_runtime_sync.py` - checks source hashes, required mechanics, language separation, and runtime metadata.
+- `sg-qug-agent.md` - legacy single-agent prompt retained for historical comparison.
+- `LICENSE` - project license.
 
-## What QUG Does
+New changes should flow from the master specification to both runtime files.
 
-QUG acts as a lightweight game master. It takes a real-world difficulty and temporarily recasts it as a parallel quest world while preserving the underlying pressure structure of the original situation.
+## Interaction Architecture
 
-The aim is not to give better advice or solve the user's problem directly. The aim is to reorganize an oversized action demand into a smaller, legitimate local move.
+Both language runtimes implement the same four-part loop:
 
-Examples of this shift include:
+1. **Extract** a provisional action-blocking structure from only what the participant stated.
+2. **Transform** the representational surface while preserving the established relational pressure.
+3. **Enact** bounded choices through causal quest-world play.
+4. **Return** to one action unit that can be completed without resolving the larger uncertainty.
 
-- From choosing a whole career path to testing one appealing possibility.
-- From asking only after full understanding to asking one specific question.
-- From restarting study properly to touching the material for one minute.
-- From fixing a relationship to trying one bounded repair utterance.
+Both runtimes include Normal Mode and a 5-8 minute Demo Mode. Their mechanics, safety boundaries, state reconstruction, choice design, and Personal/Sample separation should remain equivalent.
 
-## Session Structure
+## Runtime Strategy
 
-A typical QUG session follows this loop:
+QUG has one design source and two runtime instantiations:
 
-1. Ask for one recent stuck moment.
-2. Identify the pressure structure behind the situation.
-3. Translate that structure into a parallel quest world.
-4. Run two or three short choice-bearing scenes.
-5. Ask what felt closest to reality.
-6. Return to real-world language.
-7. Shape one side quest for the next 24-72 hours.
-
-The prompt emphasizes bounded choice, observer-mode distance, local consequence, safe-to-fail progression, and explicit closure.
-
-## Using With Discord Agent Hub
-
-Use `sg-qug-agent.md` as an import-ready agent definition for [`discord-agent-hub`](https://github.com/ks91/discord-agent-hub).
-
-The file includes an `agent` metadata block:
-
-```agent
-id: sg-qug-agent
-name: QUG
-provider: openai_responses
-model: gpt-5.4-mini
-description: Questifying Uncertainty Game
-enabled: true
-tools:
-  web_search: false
-  code_execution: false
+```text
+QUG Master Specification
+        |
+        +-- QUG English Runtime
+        +-- QUG Japanese Runtime
 ```
 
-In Discord, import the Markdown file with the `/agent-import` slash command. After the agent is imported, start a Discord thread with QUG using `/chat agent_id:sg-qug-agent`, then send messages inside the created thread.
+The master retains the complete bilingual design rationale and state rules. Runtime prompts fix the output language and omit `SESSION_LANGUAGE`, removing language detection and switching as failure modes. `ACTIVE_MODE`, `ENTRY_TYPE`, and `CURRENT_STAGE` remain prompt-level session variables reconstructed silently from conversation history; they are not persisted by `discord-agent-hub`.
 
-If you update `sg-qug-agent.md`, re-import it with `/agent-import` and `overwrite:true` to replace the existing agent definition.
+## Editing Workflow
 
-The agent is designed to open with a short introduction, ask for one current difficulty, and guide the user through the quest loop.
+1. Update `sg-qug-agent-master.md` first.
+2. Apply the same behavioral change to both language runtimes.
+3. Update each runtime's `source-sha256` marker to the current master SHA-256.
+4. Run `python3 check_qug_runtime_sync.py`.
+5. Test English and Japanese Normal/Demo paths before deployment.
+
+The checker deliberately fails after any master edit until both runtime source markers are refreshed. It also rejects `SESSION_LANGUAGE` in a runtime and Japanese characters in the English runtime. It is a drift guard, not a substitute for bilingual behavioral testing.
+
+## Importing Into Discord Agent Hub
+
+Import the desired runtime with the `/agent-import` slash command:
+
+- Conference English agent: `sg-qug-agent-en.md`
+- Japanese testing agent: `sg-qug-agent-ja.md`
+
+After import, start a thread using `/chat` with the corresponding agent ID:
+
+- `sg-qug-agent-en`
+- `sg-qug-agent-ja`
+
+When updating an existing agent, use `/agent-import` with `overwrite:true`. Do not import `sg-qug-agent-master.md`; its metadata has `enabled: false` because it is the specification rather than a deployment prompt.
 
 ## Design Principles
 
 QUG should:
 
-- Start from a concrete recent scene rather than an abstract life goal.
-- Preserve the pressure structure while changing the surface setting.
-- Avoid copying the user's real workplace, family, school, or project too literally.
-- Keep each scene short and choice-bearing.
-- Let the user observe the protagonist before mapping the quest back to reality.
-- Return to ordinary real-world language before deciding the next step.
-- End with one small side quest, including what to do, when to do it, and what counts as completion.
+- Start from a recent concrete situation rather than an abstract life goal.
+- Avoid inventing uncertainty, perfectionism, fear, or hidden motives not stated by the participant.
+- Preserve the established pressure structure while changing the setting, roles, objects, and visible task.
+- Use qualitatively different choices with local consequences and causal continuation.
+- Keep Personal and Sample entry states separate throughout Return and Completion.
+- Return to ordinary language before confirming one bounded side quest.
 
 QUG should not:
 
-- Act as a therapist or counselor.
-- Promise treatment, anxiety reduction, or emotional recovery.
-- Turn the session into generic advice.
-- Ask the user to rate uncertainty with numbers.
-- Over-specify the user's real-world next move without confirmation.
-
-## Research Background
-
-QUG is based on the idea that lightweight game structures can function as epistemic tools for uncertain long-term activity. The key claim is that game structure can make continued action feel thinkable and legitimate while uncertainty remains unresolved.
-
-The design is informed by serious games, epistemic games, reflective play, self-distancing, and LLM-based roleplay agents.
+- Act as therapy, counseling, crisis support, or high-stakes professional advice.
+- Treat later agreement with an AI interpretation as proof that the interpretation existed in the original account.
+- Copy the real-world decision into fantasy labels without meaningful transformation.
+- Present a prepared sample as the participant's own situation.
+- Promise behavioral change, distress reduction, or correct decisions.
 
 ## Status
 
-This is an exploratory prompt prototype. It is intended for research, design exploration, and small-scale piloting rather than clinical, therapeutic, or high-stakes decision support.
+QUG is an exploratory interaction-design prototype. The English runtime is intended for the JCSG conference demo, while both runtimes support continued formative testing of the same language-independent interaction architecture.
