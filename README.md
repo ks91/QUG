@@ -10,7 +10,6 @@ This repository contains the QUG specification and language-specific agent defin
 - `sg-qug-agent-en.md` - English runtime with Normal and Demo modes. Use this for the JCSG conference demonstration.
 - `sg-qug-agent-ja.md` - Japanese runtime with Normal and Demo modes.
 - `check_qug_runtime_sync.py` - checks source hashes, required mechanics, language separation, and runtime metadata.
-- `sg-qug-agent.md` - legacy single-agent prompt retained for historical comparison.
 - `LICENSE` - project license.
 
 New changes should flow from the master specification to both runtime files.
