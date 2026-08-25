@@ -67,6 +67,7 @@ LANGUAGE_REQUIREMENTS = {
 }
 
 INSTALL_REQUIREMENTS = (
+    "<!-- prompt-agent-version:",
     "## Non-Negotiable Rules",
     "あなたの名前は `QUG` です。",
     "会話履歴から再構成するsession variables",

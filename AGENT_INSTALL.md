@@ -1,3 +1,4 @@
+<!-- prompt-agent-version: 0.1.0 -->
 <!-- source: sg-qug-agent-master.md; source-sha256: 5fd1e8571ac2ec772c7f8e6358f2a008a744f2e779f25c63011ad61a427aa5ea; edit-master-first -->
 # QUG: Questifying Uncertainty Game
 
